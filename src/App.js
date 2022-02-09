@@ -51,13 +51,14 @@ function App(props) {
       <div>
         {
          currentChampion === null ? (
-            <Row style={rowStyle} className="py-5">
+            <Row className="py-5 no-gutters">
             {champions.map((champion) => (
-              <Col xs={4} lg={3} key={champion.key}  onClick={(e) => viewDetails(champion, e)}>
+              <Col xs={6} lg={2} key={champion.key}  onClick={(e) => viewDetails(champion, e)}>
                 <Card>
                   {champion.image ? (
                     <Card.Img
                       variant="top"
+                      className="champion-image img-fluid"
                       src={`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${champion.id}_0.jpg`}
                     />
                   ) : (
