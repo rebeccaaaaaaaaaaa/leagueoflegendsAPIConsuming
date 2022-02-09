@@ -1,23 +1,85 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
 
-function App() {
+
+import ViewDetails from "./components/ViewDetails";
+
+function App(props) {
+  const [champions, setChampions] = useState([]);
+  const [currentChampion, setCurrentChampion] = useState(null);
+
+
+  const getChampions = async () => {
+    const response = await fetch(
+      "http://ddragon.leagueoflegends.com/cdn/10.2.1/data/pt_BR/champion.json"
+    );
+    const json = await response.json();
+    const champions = json.data;
+    setChampions(Object.keys(champions).map((key) => champions[key]));
+    console.log(champions);
+  };
+
+  const viewDetails = (champion, e) => {
+    const filteredChampion = champions.filter(
+      (champ) => champ.key === champion.key
+    );
+    const newCurrentChampion =
+      filteredChampion.length > 0 ? filteredChampion[0] : null;
+    setCurrentChampion(newCurrentChampion);
+    console.log(filteredChampion);
+  };
+
+  const closeDetails = () => {
+    setCurrentChampion(null);
+  }
+
+  useEffect(() => {
+    getChampions();
+  }, []);
+
+  const rowStyle = {
+    width: "900px",
+    margin: "auto",
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        {
+         currentChampion === null ? (
+            <Row style={rowStyle} className="py-5">
+            {champions.map((champion) => (
+              <Col xs={4} lg={3} key={champion.key}  onClick={(e) => viewDetails(champion, e)}>
+                <Card>
+                  {champion.image ? (
+                    <Card.Img
+                      variant="top"
+                      src={`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${champion.id}_0.jpg`}
+                    />
+                  ) : (
+                    <Card.Img
+                      variant="top"
+                      src="https://via.placeholder.com/100"
+                    />
+                  )}
+                  <Card.Body>
+                    <Card.Title>{champion.name}</Card.Title>
+                    <Card.Text>{champion.title}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+          ) : 
+          <ViewDetails champion={currentChampion} closeDetails={closeDetails} />
+
+        }
+        
+      </div>
     </div>
   );
 }
