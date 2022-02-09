@@ -15,7 +15,7 @@ function App(props) {
 
   const getChampions = async () => {
     const response = await fetch(
-      "http://ddragon.leagueoflegends.com/cdn/10.2.1/data/pt_BR/champion.json"
+      "https://ddragon.leagueoflegends.com/cdn/10.2.1/data/pt_BR/champion.json"
     );
     const json = await response.json();
     const champions = json.data;
